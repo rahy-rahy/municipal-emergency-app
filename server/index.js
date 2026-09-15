@@ -131,7 +131,7 @@ async function start() {
   try {
     await runMigrations();
     await seedIfEmpty();
-    require('./push');
+    setTimeout(function(){ try{ require('./push'); }catch(e){ console.error('push load error', e.message);} }, 0);
   } catch (err) {
     console.error('\nStartup failed. Could not prepare the database.');
     console.error(err.message);
