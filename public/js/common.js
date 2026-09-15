@@ -127,6 +127,7 @@
     if (lo) lo.addEventListener('click', logout);
 
     I18N.apply(el);
+    if (user) { try { initPush(); } catch (e) {} }
     return { cfg: cfg, user: user };
   }
 
@@ -198,6 +199,63 @@
     ov.classList.add('show');
   }
 
+  // Set up push notifications, but only when running inside the installed
+  // Android app. In a plain browser this does nothing. Each incident type
+  // gets its own channel so the phone can play a different sound.
+  var pushStarted = false;
+  function initPush() {
+    if (pushStarted) return;
+    if (!window.Capacitor || typeof Capacitor.isNativePlatform !== 'function' || !Capacitor.isNativePlatform()) return;
+    var Push = Capacitor.Plugins && Capacitor.Plugins.PushNotifications;
+    if (!Push) return;
+    pushStarted = true;
+
+    var channels = [
+      { id: 'help', name: 'Help needed', sound: 'help', importance: 5 },
+      { id: 'fire', name: 'Fire', sound: 'fire', importance: 5 },
+      { id: 'medical', name: 'Medical', sound: 'medical', importance: 5 },
+      { id: 'robbery', name: 'Robbery', sound: 'robbery', importance: 4 },
+      { id: 'flood', name: 'Flood', sound: 'flood', importance: 4 },
+      { id: 'electricity', name: 'Electricity', sound: 'electricity', importance: 4 },
+      { id: 'other', name: 'Other incident', sound: 'other', importance: 3 },
+      { id: 'broadcast', name: 'Town notice', sound: 'other', importance: 3 },
+      { id: 'broadcast_critical', name: 'Critical alert', sound: 'critical', importance: 5 }
+    ];
+    channels.forEach(function (c) {
+      try {
+        Push.createChannel({
+          id: c.id, name: c.name, description: c.name,
+          sound: c.sound, importance: c.importance, visibility: 1, vibration: true
+        });
+      } catch (e) {}
+    });
+
+    Push.addListener('registration', function (t) {
+      var token = t && t.value;
+      if (token) { api('POST', '/api/push/register', { token: token, platform: 'android' }).catch(function () {}); }
+    });
+    Push.addListener('registrationError', function () {});
+    // App open in the foreground: show the loud alert for urgent types.
+    Push.addListener('pushNotificationReceived', function (n) {
+      var d = (n && n.data) || {};
+      if (d.kind === 'broadcast' && d.severity === 'critical') {
+        criticalAlert((n.title || '') + '. ' + (n.body || ''));
+      } else if (d.kind === 'incident') {
+        toast((n.title || 'New incident') + ': ' + (n.body || ''), 'warn');
+      }
+    });
+    // Tapped a notification: go to the right screen.
+    Push.addListener('pushNotificationActionPerformed', function (a) {
+      var d = (a && a.notification && a.notification.data) || {};
+      if (d.kind === 'incident') window.location.href = '/staff#incidents';
+      else if (d.kind === 'broadcast') window.location.href = '/app#feed';
+    });
+
+    Push.requestPermissions().then(function (p) {
+      if (p && p.receive === 'granted') Push.register();
+    }).catch(function () {});
+  }
+
   window.App = {
     api: api,
     getConfig: getConfig,
@@ -210,7 +268,8 @@
     criticalAlert: criticalAlert,
     watchCriticalAlerts: watchCriticalAlerts,
     registerServiceWorker: registerServiceWorker,
-    showImage: showImage
+    showImage: showImage,
+    initPush: initPush
   };
 
   registerServiceWorker();

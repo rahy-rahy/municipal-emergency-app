@@ -52,6 +52,8 @@ router.post('/reports', auth.requireAuth, auth.requireVerified,
         ]
       );
       await audit(req.user.id, 'report.create', { id: row.id, type: d.type }, clientIp(req));
+      // Notify operators and admins, without blocking the response.
+      try { require('../push').notifyStaffOfReport(row, req.user.full_name); } catch (e) {}
       return res.status(201).json({ ok: true, report: shape(row) });
     } catch (err) {
       console.error('report create failed:', err.message);

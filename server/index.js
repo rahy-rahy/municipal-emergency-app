@@ -92,6 +92,7 @@ app.use('/api', publicRoutes);
 app.use('/api', reportRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/push', require('./routes/push'));
 
 // Static assets last, so protected routes always win. Only the public
 // folder is exposed. The data folder with uploads is never static.

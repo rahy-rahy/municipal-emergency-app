@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "137746684104",
+    "project_id": "hemleya-emergency",
+    "storage_bucket": "hemleya-emergency.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:137746684104:android:3d1c31e2c703bb6a6aedfd",
+        "android_client_info": {
+          "package_name": "com.solvenx.emergency"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj5Qe8LkcK1285Ge-nIeKUfbv1GGJyatY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

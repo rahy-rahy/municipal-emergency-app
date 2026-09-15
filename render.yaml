@@ -49,3 +49,5 @@ services:
         value: Town emergency line
       - key: EMERGENCY_CONTACT_NUMBER
         value: "03804326"
+      - key: FIREBASE_CREDENTIALS_FILE
+        value: /etc/secrets/firebase-service-account.json

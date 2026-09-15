@@ -62,6 +62,7 @@ router.post('/broadcasts', async (req, res) => {
      d.radiusKm != null ? d.radiusKm : null]
   );
   await audit(req.user.id, 'broadcast.create', { id: row.id, severity: d.severity }, clientIp(req));
+  try { require('../push').notifyResidentsOfBroadcast(row); } catch (e) {}
   res.status(201).json({ ok: true, broadcast: {
     id: row.id, title: row.title, message: row.message, severity: row.severity,
     lat: row.lat, lng: row.lng, radiusKm: row.radius_km, createdAt: row.created_at
