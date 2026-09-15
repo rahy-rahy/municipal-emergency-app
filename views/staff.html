@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Operator tools</title>
+  <meta name="theme-color" content="#0b5563">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="topbar"><div id="topbar"></div></div>
+  <div class="tabs"><div class="inner" id="tabbar"></div></div>
+
+  <div class="container">
+    <div id="msg"></div>
+
+    <section id="pane-verify" class="pane">
+      <div class="card">
+        <h1 data-i18n="verify.heading">Verification queue</h1>
+        <p class="subtle">Approve residents after checking their ID. Approving unlocks reporting for that account.</p>
+        <div id="verify-list"></div>
+      </div>
+    </section>
+
+    <section id="pane-incidents" class="pane hidden">
+      <div class="card">
+        <h1 data-i18n="incidents.heading">Incident queue</h1>
+        <div id="incidents-list"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/page-staff.js"></script>
+</body>
+</html>

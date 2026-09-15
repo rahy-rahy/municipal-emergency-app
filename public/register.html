@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Create your account</title>
+  <meta name="theme-color" content="#0b5563">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="topbar"><div id="topbar"></div></div>
+
+  <div class="container narrow">
+    <div class="card">
+      <h1 data-i18n="reg.heading">Create your account</h1>
+      <div id="msg"></div>
+
+      <section id="step-form">
+        <div class="field">
+          <label for="name" data-i18n="reg.name">Full name</label>
+          <input type="text" id="name" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="email" data-i18n="login.email">Email</label>
+          <input type="email" id="email" autocomplete="email" placeholder="name@example.com">
+        </div>
+        <div class="field">
+          <label for="phone" data-i18n="reg.phone">Phone number</label>
+          <input type="tel" id="phone" autocomplete="tel" placeholder="+961 ...">
+        </div>
+        <div class="field">
+          <label for="password" data-i18n="login.password">Password</label>
+          <input type="password" id="password" autocomplete="new-password">
+          <div class="hint">At least 8 characters.</div>
+        </div>
+
+        <h3 style="margin-top:18px">Identity check</h3>
+        <p class="subtle">The municipality reviews your ID to confirm you live in the town. Files are kept with restricted access and used only for this check. This is optional in the demo.</p>
+        <div class="field">
+          <label for="idFront" data-i18n="reg.idfront">ID front</label>
+          <input type="file" id="idFront" accept="image/*">
+        </div>
+        <div class="field">
+          <label for="idBack" data-i18n="reg.idback">ID back</label>
+          <input type="file" id="idBack" accept="image/*">
+        </div>
+        <div class="field">
+          <label for="selfie"><span data-i18n="reg.selfie">Selfie</span> <span class="subtle">(optional)</span></label>
+          <input type="file" id="selfie" accept="image/*">
+        </div>
+
+        <button class="btn full" id="reg-btn" data-i18n="reg.submit">Create account</button>
+        <hr class="divider">
+        <a href="/">I already have an account</a>
+      </section>
+
+      <section id="step-done" class="hidden">
+        <h3>Check your email</h3>
+        <div class="notice info">We sent a confirmation link to your email. Open it to confirm your address. After that an operator reviews your account before you can report incidents.</div>
+        <div id="demo-link" class="notice warn hidden"></div>
+        <a class="btn" href="/">Back to sign in</a>
+      </section>
+    </div>
+  </div>
+
+  <div class="footer"><div class="inner">
+    <span class="spacer"></span>
+    <a href="/terms">Terms and Conditions</a>
+    <a href="/privacy">Privacy Policy</a>
+  </div></div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/page-register.js"></script>
+</body>
+</html>

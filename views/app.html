@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Report an emergency</title>
+  <meta name="theme-color" content="#0b5563">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/vendor/leaflet.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="topbar"><div id="topbar"></div></div>
+  <div class="tabs"><div class="inner" id="tabbar"></div></div>
+
+  <div class="container">
+    <div id="msg"></div>
+
+    <section id="pane-report" class="pane">
+      <div id="locked-note"></div>
+      <div class="card">
+        <h1 data-i18n="report.heading">Report an emergency</h1>
+        <p class="subtle" data-i18n="report.pick">Choose what is happening. Your location is added automatically.</p>
+        <div class="incident-grid" id="incident-grid"></div>
+        <div class="quick-row">
+          <button class="btn help" id="btn-help" data-i18n="report.needhelp">I need help</button>
+          <button class="btn safe" id="btn-safe" data-i18n="report.imsafe">I am safe</button>
+        </div>
+      </div>
+
+      <div class="card hidden" id="report-form">
+        <div class="row-between">
+          <h2><span data-i18n="report.form.heading">Details</span>: <span id="rf-type" class="type-tag"></span></h2>
+          <button class="btn small secondary" id="rf-cancel" data-i18n="common.cancel">Cancel</button>
+        </div>
+        <div class="field">
+          <label for="rf-note"><span data-i18n="common.note">Note</span> <span class="subtle">(<span data-i18n="common.optional">optional</span>)</span></label>
+          <textarea id="rf-note" data-i18n-ph="report.note.ph"></textarea>
+        </div>
+        <div class="field">
+          <label><span data-i18n="common.location">Location</span></label>
+          <div id="rf-map" style="height:220px" class="hidden"></div>
+          <div class="hint" id="rf-loc-note"></div>
+        </div>
+        <div class="field">
+          <label for="rf-photo"><span data-i18n="report.photo">Photo</span> <span class="subtle">(<span data-i18n="common.optional">optional</span>)</span></label>
+          <input type="file" id="rf-photo" accept="image/*">
+        </div>
+        <button class="btn full" id="rf-send" data-i18n="common.send">Send</button>
+      </div>
+    </section>
+
+    <section id="pane-map" class="pane hidden">
+      <div class="card">
+        <h1 data-i18n="map.heading">Incident map</h1>
+        <div id="map"></div>
+        <div id="map-fallback" class="map-fallback"></div>
+        <p class="map-note" data-i18n="map.needsinternet"></p>
+      </div>
+    </section>
+
+    <section id="pane-feed" class="pane hidden">
+      <div class="card">
+        <h1 data-i18n="feed.heading">Town feed</h1>
+        <div id="feed-list"></div>
+      </div>
+    </section>
+
+    <section id="pane-reports" class="pane hidden">
+      <div class="card">
+        <h1 data-i18n="myreports.heading">My reports</h1>
+        <div id="myreports-list"></div>
+      </div>
+    </section>
+
+    <section id="pane-settings" class="pane hidden">
+      <div class="card mid">
+        <h1 data-i18n="settings.heading">Settings</h1>
+        <div class="field">
+          <label for="set-lang" data-i18n="settings.language">Language</label>
+          <select id="set-lang">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="ar">العربية</option>
+          </select>
+        </div>
+        <div class="field">
+          <label><input type="checkbox" id="set-deaf" style="width:auto;margin-inline-end:8px"> <span data-i18n="settings.deaf">Deaf and hard of hearing mode</span></label>
+          <div class="hint" data-i18n="settings.deaf.desc"></div>
+        </div>
+        <button class="btn" id="set-save" data-i18n="common.save">Save</button>
+      </div>
+
+      <div class="card mid">
+        <h2 data-i18n="call.heading">Call emergency services</h2>
+        <p class="subtle" data-i18n="call.desc"></p>
+        <div class="call-list" id="call-list"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/vendor/leaflet.js"></script>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/page-app.js"></script>
+</body>
+</html>

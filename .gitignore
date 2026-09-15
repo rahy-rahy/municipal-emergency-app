@@ -1,0 +1,13 @@
+node_modules/
+.env
+data/uploads/file_*
+npm-debug.log*
+.DS_Store
+
+# Capacitor / Android build outputs
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+android/app/src/main/assets/public/
+.gradle/

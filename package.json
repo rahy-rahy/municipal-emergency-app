@@ -1,0 +1,38 @@
+{
+  "name": "municipal-emergency-app",
+  "version": "1.0.0",
+  "description": "Municipal Emergency Reporting App. Secure Express and PostgreSQL backend with an installable web app for residents, operators, and admins.",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js",
+    "reset": "node scripts/reset.js",
+    "setup": "node scripts/migrate.js && node scripts/seed.js",
+    "create-admin": "node scripts/create-admin.js"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "bcryptjs": "2.4.3",
+    "compression": "1.7.5",
+    "connect-pg-simple": "9.0.1",
+    "dotenv": "16.4.7",
+    "express": "4.21.2",
+    "express-rate-limit": "7.4.1",
+    "express-session": "1.18.1",
+    "helmet": "8.0.0",
+    "multer": "2.0.2",
+    "nodemailer": "6.9.16",
+    "pg": "8.13.1",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.2"
+  }
+}

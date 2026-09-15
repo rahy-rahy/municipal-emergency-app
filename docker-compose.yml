@@ -1,0 +1,24 @@
+# Local PostgreSQL for the app. Start it with:
+#   docker compose up -d
+# Data is kept in a named volume so it survives restarts.
+services:
+  db:
+    image: postgres:16
+    container_name: mera_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mera_app
+      POSTGRES_PASSWORD: localdevpass
+      POSTGRES_DB: mera
+    ports:
+      - "5432:5432"
+    volumes:
+      - mera_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mera_app -d mera"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  mera_pgdata:

@@ -1,0 +1,51 @@
+# Render Blueprint. Import this repo on render.com and it creates the
+# web service and a PostgreSQL database, wired together with HTTPS.
+# The free database is for testing and expires after 30 days. For real
+# use, change the database plan to a paid tier and the web plan to one
+# that does not sleep.
+
+databases:
+  - name: mera-db
+    databaseName: mera
+    user: mera_app
+    plan: free
+
+services:
+  - type: web
+    name: municipal-emergency-app
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/config
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mera-db
+          property: connectionString
+      - key: PGSSL
+        value: "true"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: DEMO_MODE
+        value: "false"
+      - key: TOWN_NAME
+        value: Sakiet El Misk and Bhersaf
+      - key: TOWN_LAT
+        value: "33.9086"
+      - key: TOWN_LNG
+        value: "35.6531"
+      - key: NUM_CIVIL_DEFENSE
+        value: "125"
+      - key: NUM_RED_CROSS
+        value: "140"
+      - key: NUM_POLICE
+        value: "112"
+      - key: EMERGENCY_CONTACT_NAME
+        value: Town emergency line
+      - key: EMERGENCY_CONTACT_NUMBER
+        value: "03804326"
