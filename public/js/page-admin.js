@@ -92,6 +92,7 @@
           item.innerHTML =
             '<div class="row-between"><div>' +
               '<strong>' + App.escapeHtml(u.fullName) + '</strong>' + (u.isDemo ? ' <span class="demo-flag">demo</span>' : '') +
+              (u.isBlocked ? ' <span class="chip sev-critical">blocked</span>' : '') +
               '<div class="meta">' + App.escapeHtml(u.email) + ' | ' + App.escapeHtml(u.phone || '') + '</div>' +
               '<div class="meta">status: ' + App.escapeHtml(u.status) + ' | email ' + (u.emailVerified ? 'confirmed' : 'not confirmed') + '</div>' +
             '</div><span class="role-badge">' + I18N.t('role.' + u.role) + '</span></div>' +
@@ -103,9 +104,25 @@
                 }).join('') +
               '</select>' +
               (isSelf ? '<span class="subtle" style="align-self:center">this is you</span>' :
-                '<button class="btn small" data-setrole="' + u.id + '">' + I18N.t('common.save') + '</button>') +
+                '<button class="btn small" data-setrole="' + u.id + '">' + I18N.t('common.save') + '</button>' +
+                (u.isBlocked
+                  ? '<button class="btn small secondary" data-unblock="' + u.id + '">Unblock</button>'
+                  : '<button class="btn small danger" data-block="' + u.id + '">Block</button>')) +
             '</div>';
           el.appendChild(item);
+        });
+        el.querySelectorAll('[data-block]').forEach(function (b) {
+          b.addEventListener('click', async function () {
+            if (!confirm('Block this account? They will not be able to sign in or report.')) return;
+            try { await App.api('POST', '/api/admin/users/' + b.dataset.block + '/block', { blocked: true }); setMsg('Account blocked.', 'ok'); loadAccounts(); }
+            catch (e) { setMsg(e.message, 'error'); }
+          });
+        });
+        el.querySelectorAll('[data-unblock]').forEach(function (b) {
+          b.addEventListener('click', async function () {
+            try { await App.api('POST', '/api/admin/users/' + b.dataset.unblock + '/block', { blocked: false }); setMsg('Account unblocked.', 'ok'); loadAccounts(); }
+            catch (e) { setMsg(e.message, 'error'); }
+          });
         });
         el.querySelectorAll('[data-setrole]').forEach(function (b) {
           b.addEventListener('click', async function () {

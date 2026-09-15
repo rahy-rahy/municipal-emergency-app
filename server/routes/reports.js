@@ -35,6 +35,24 @@ router.post('/reports', auth.requireAuth, auth.requireVerified,
     if (!check.ok) return res.status(400).json({ error: check.error });
     const d = check.data;
 
+    // Cooldown: at most one report every 3 minutes per user, to stop spam.
+    try {
+      const last = await db.one(
+        'SELECT created_at FROM reports WHERE reporter_id = $1 ORDER BY created_at DESC LIMIT 1',
+        [req.user.id]
+      );
+      if (last) {
+        const waitedMs = Date.now() - new Date(last.created_at).getTime();
+        const cooldownMs = 3 * 60 * 1000;
+        if (waitedMs < cooldownMs) {
+          const secondsLeft = Math.ceil((cooldownMs - waitedMs) / 1000);
+          return res.status(429).json({
+            error: 'Please wait ' + secondsLeft + ' seconds before sending another report.'
+          });
+        }
+      }
+    } catch (e) {}
+
     const lat = d.lat != null ? d.lat : null;
     const lng = d.lng != null ? d.lng : null;
     const groupId = await findDuplicateGroup(d.type, lat, lng);

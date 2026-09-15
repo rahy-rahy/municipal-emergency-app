@@ -132,6 +132,10 @@ router.post('/login', authLimiter, async (req, res) => {
     await audit(user ? user.id : null, 'auth.login_failed', { email }, clientIp(req));
     return res.status(401).json({ error: 'Wrong email or password.' });
   }
+  if (user.is_blocked) {
+    await audit(user.id, 'auth.login_blocked', {}, clientIp(req));
+    return res.status(403).json({ error: 'Your account has been suspended. Contact the municipality.' });
+  }
 
   req.session.userId = user.id;
   await audit(user.id, 'auth.login', {}, clientIp(req));

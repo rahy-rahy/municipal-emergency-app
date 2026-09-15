@@ -54,7 +54,12 @@ async function staffUserIds() {
 }
 
 async function residentUserIds() {
-  var res = await db.query("SELECT id FROM users WHERE status = 'verified'");
+  var res = await db.query("SELECT id FROM users WHERE status = 'verified' AND is_blocked = FALSE");
+  return res.rows.map(function (r) { return r.id; });
+}
+
+async function allUserIds() {
+  var res = await db.query("SELECT id FROM users WHERE is_blocked = FALSE");
   return res.rows.map(function (r) { return r.id; });
 }
 
@@ -122,9 +127,10 @@ async function notifyStaffOfReport(report, reporterName) {
 async function notifyResidentsOfBroadcast(broadcast) {
   if (!enabled) return;
   try {
-    var ids = await residentUserIds();
+    var isCritical = broadcast.severity === 'critical';
+    var ids = isCritical ? await allUserIds() : await residentUserIds();
     var tokens = await tokensForUsers(ids);
-    var channel = broadcast.severity === 'critical' ? 'broadcast_critical' : 'broadcast';
+    var channel = isCritical ? 'broadcast_critical' : 'broadcast';
     await sendToTokens(tokens, {
       title: broadcast.title, body: broadcast.message, channelId: channel,
       data: { kind: 'broadcast', severity: String(broadcast.severity || '') }

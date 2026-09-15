@@ -63,6 +63,7 @@ async function loadUser(req, res, next) {
 // Requires any signed in user.
 function requireAuth(req, res, next) {
   if (!req.user) return res.status(401).json({ error: 'Please sign in.' });
+  if (req.user.is_blocked) return res.status(403).json({ error: 'Your account has been suspended.' });
   next();
 }
 

@@ -1,5 +1,8 @@
 (async function () {
-      await App.buildTopbar('/staff');
+      var ctx = await App.buildTopbar('/staff');
+      var cfg = ctx.cfg || {};
+      var contact = cfg.emergencyContact || { number: '' };
+      var waNumber = String(contact.number || '').replace(/\D/g, '').replace(/^0/, '961');
 
       var tabs = [
         { id: 'verify', key: 'nav.verify' },
@@ -84,6 +87,8 @@
         var data = await App.api('GET', '/api/staff/incidents');
         if (!data.incidents.length) { el.innerHTML = '<p class="subtle">' + I18N.t('incidents.none') + '</p>'; return; }
         el.innerHTML = '';
+        var byId = {};
+        data.incidents.forEach(function (r) { byId[r.id] = r; });
         data.incidents.forEach(function (r) {
           var item = document.createElement('div');
           item.className = 'list-item';
@@ -110,11 +115,32 @@
                 }).join('') +
               '</select>' +
               '<button class="btn small" data-setstatus="' + r.id + '">' + I18N.t('common.save') + '</button>' +
+              (waNumber ? '<button class="btn small" style="background:#1f7a33" data-dispatch="' + r.id + '">Send to firefighters</button>' : '') +
             '</div>';
           el.appendChild(item);
         });
         el.querySelectorAll('[data-photo]').forEach(function (b) {
           b.addEventListener('click', function () { App.showImage(b.dataset.photo, 'Report photo'); });
+        });
+        el.querySelectorAll('[data-dispatch]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var r = byId[b.dataset.dispatch];
+            if (!r) return;
+            var lines = [];
+            lines.push('EMERGENCY DISPATCH - ' + I18N.t('type.' + r.type) + (r.needHelp ? ' (needs help)' : ''));
+            lines.push('Town: ' + ((cfg.town && cfg.town.name) || 'Hemleya'));
+            lines.push('Reporter: ' + (r.reporterName || '') + (r.reporterPhone ? ' (' + r.reporterPhone + ')' : ''));
+            if (r.description) lines.push('Details: ' + r.description);
+            if (r.lat != null) {
+              lines.push('Location: ' + r.lat.toFixed(5) + ', ' + r.lng.toFixed(5));
+              lines.push('Map: https://www.google.com/maps?q=' + r.lat + ',' + r.lng);
+            } else {
+              lines.push('Location: not provided');
+            }
+            lines.push('Time: ' + new Date(r.createdAt).toLocaleString());
+            var url = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(lines.join('\n'));
+            window.open(url, '_blank');
+          });
         });
         el.querySelectorAll('[data-setstatus]').forEach(function (b) {
           b.addEventListener('click', async function () {

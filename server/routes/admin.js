@@ -14,7 +14,7 @@ router.use(auth.requireAuth, auth.requireRole('admin'));
 // All accounts.
 router.get('/users', async (req, res) => {
   const rows = await db.many(
-    `SELECT id, email, full_name, phone, role, status, email_verified, is_demo, created_at
+    `SELECT id, email, full_name, phone, role, status, email_verified, is_demo, is_blocked, created_at
      FROM users ORDER BY created_at DESC`
   );
   res.json({
@@ -27,6 +27,7 @@ router.get('/users', async (req, res) => {
       status: u.status,
       emailVerified: u.email_verified,
       isDemo: u.is_demo,
+      isBlocked: u.is_blocked,
       createdAt: u.created_at
     }))
   });
@@ -67,6 +68,22 @@ router.post('/broadcasts', async (req, res) => {
     id: row.id, title: row.title, message: row.message, severity: row.severity,
     lat: row.lat, lng: row.lng, radiusKm: row.radius_km, createdAt: row.created_at
   }});
+});
+
+// Block or unblock an account. A blocked user cannot sign in or report.
+// An admin cannot block their own account.
+router.post('/users/:id/block', async (req, res) => {
+  const blocked = !!(req.body && req.body.blocked);
+  if (req.params.id === req.user.id) {
+    return res.status(400).json({ error: 'You cannot block your own account.' });
+  }
+  const row = await db.one(
+    'UPDATE users SET is_blocked = $1, updated_at = now() WHERE id = $2 RETURNING id, is_blocked',
+    [blocked, req.params.id]
+  );
+  if (!row) return res.status(404).json({ error: 'User not found.' });
+  await audit(req.user.id, blocked ? 'user.block' : 'user.unblock', { id: row.id }, clientIp(req));
+  res.json({ ok: true, id: row.id, isBlocked: row.is_blocked });
 });
 
 // The audit trail, newest first.
