@@ -130,7 +130,7 @@ async function notifyResidentsOfBroadcast(broadcast) {
     var isCritical = broadcast.severity === 'critical';
     var ids = isCritical ? await allUserIds() : await residentUserIds();
     var tokens = await tokensForUsers(ids);
-    var channel = isCritical ? 'broadcast_critical' : 'broadcast';
+    var channel = isCritical ? 'critical_alarm' : 'broadcast';
     await sendToTokens(tokens, {
       title: broadcast.title, body: broadcast.message, channelId: channel,
       data: { kind: 'broadcast', severity: String(broadcast.severity || '') }

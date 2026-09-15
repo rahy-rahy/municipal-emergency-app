@@ -132,7 +132,13 @@
   }
 
   // Full screen critical alert. Doubles as the deaf and hard of hearing
-  // visual alert: large text plus strong vibration, no reliance on sound.
+  // visual alert. The siren loops and the screen stays red until dismissed.
+  var caAudio = null, caVibrate = null;
+  function stopCriticalAlarm() {
+    if (caAudio) { try { caAudio.pause(); caAudio.currentTime = 0; } catch (e) {} caAudio = null; }
+    if (caVibrate) { clearInterval(caVibrate); caVibrate = null; }
+    if (navigator.vibrate) { try { navigator.vibrate(0); } catch (e) {} }
+  }
   function criticalAlert(message) {
     var ov = document.getElementById('critical-overlay');
     if (!ov) {
@@ -145,11 +151,27 @@
       document.body.appendChild(ov);
       ov.querySelector('#ca-dismiss').addEventListener('click', function () {
         ov.classList.remove('show');
+        stopCriticalAlarm();
       });
     }
     ov.querySelector('.ca-msg').textContent = message;
     ov.classList.add('show');
-    if (navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 400]);
+
+    stopCriticalAlarm();
+    try {
+      caAudio = new Audio('/sounds/critical.wav');
+      caAudio.loop = true;
+      caAudio.volume = 1.0;
+      var pl = caAudio.play();
+      if (pl && pl.catch) pl.catch(function () {});
+    } catch (e) {}
+    if (navigator.vibrate) {
+      var buzz = function () { try { navigator.vibrate([600, 200, 600, 200, 600]); } catch (e) {} };
+      buzz();
+      caVibrate = setInterval(buzz, 2200);
+    }
+    // Stop the sound after two minutes even if left open, keep the visual.
+    setTimeout(function () { stopCriticalAlarm(); }, 120000);
   }
 
   // Watches for a new critical broadcast and raises the alert once.
@@ -219,7 +241,7 @@
       { id: 'electricity', name: 'Electricity', sound: 'electricity', importance: 4 },
       { id: 'other', name: 'Other incident', sound: 'other', importance: 3 },
       { id: 'broadcast', name: 'Town notice', sound: 'other', importance: 3 },
-      { id: 'broadcast_critical', name: 'Critical alert', sound: 'critical', importance: 5 }
+      { id: 'critical_alarm', name: 'Critical alarm', sound: 'critical', importance: 5 }
     ];
     channels.forEach(function (c) {
       try {
