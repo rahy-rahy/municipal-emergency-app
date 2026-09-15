@@ -98,7 +98,7 @@
           box.classList.remove('hidden');
           if (!reportMap) {
             reportMap = L.map('rf-map').setView([coords.lat, coords.lng], 15);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
               maxZoom: 19, attribution: 'Map: Carto, OpenStreetMap contributors'
             }).addTo(reportMap);
             reportMarker = L.marker([coords.lat, coords.lng], { draggable: true }).addTo(reportMap);
@@ -191,7 +191,7 @@
         try { data = await App.api('GET', '/api/map'); } catch (e) { data = { reports: [], broadcasts: [] }; }
         if (typeof L === 'undefined' || !navigator.onLine) { renderMapFallback(data); return; }
         map = L.map('map').setView([center.lat, center.lng], 14);
-        var tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        var tiles = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
           maxZoom: 19, attribution: 'Map: Carto, OpenStreetMap contributors'
         });
         tiles.on('tileerror', function () {

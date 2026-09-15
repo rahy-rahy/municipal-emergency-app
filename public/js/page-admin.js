@@ -46,7 +46,7 @@
         if (bcInited || typeof L === 'undefined') return;
         bcInited = true;
         bcMap = L.map('bc-map').setView([center.lat, center.lng], 14);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
           maxZoom: 19, attribution: 'Map: Carto, OpenStreetMap contributors'
         }).addTo(bcMap);
         bcMap.on('click', function (e) {
