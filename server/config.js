@@ -61,9 +61,9 @@ const config = {
 
   // Town center used for the map and proximity checks.
   town: {
-    name: process.env.TOWN_NAME || 'Sakiet El Misk and Bhersaf',
-    lat: parseFloat(process.env.TOWN_LAT || '33.9086'),
-    lng: parseFloat(process.env.TOWN_LNG || '35.6531')
+    name: process.env.TOWN_NAME || 'Hemleya',
+    lat: parseFloat(process.env.TOWN_LAT || '33.9209'),
+    lng: parseFloat(process.env.TOWN_LNG || '35.6469')
   },
 
   // Emergency fallback numbers shown in the app.

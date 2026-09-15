@@ -174,6 +174,30 @@
     }
   }
 
+  // Full screen image viewer for ID documents and report photos.
+  function showImage(url, caption) {
+    var ov = document.getElementById('img-viewer');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'img-viewer';
+      ov.innerHTML =
+        '<div class="iv-msg"></div>' +
+        '<img alt="">' +
+        '<div class="iv-bar">' +
+          '<a class="btn small secondary" id="iv-open" target="_blank">Open in new tab</a>' +
+          '<button class="btn small" id="iv-close">Close</button>' +
+        '</div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', function (e) {
+        if (e.target === ov || e.target.id === 'iv-close') ov.classList.remove('show');
+      });
+    }
+    ov.querySelector('.iv-msg').textContent = caption || '';
+    ov.querySelector('img').src = url;
+    ov.querySelector('#iv-open').href = url;
+    ov.classList.add('show');
+  }
+
   window.App = {
     api: api,
     getConfig: getConfig,
@@ -185,7 +209,8 @@
     buildTopbar: buildTopbar,
     criticalAlert: criticalAlert,
     watchCriticalAlerts: watchCriticalAlerts,
-    registerServiceWorker: registerServiceWorker
+    registerServiceWorker: registerServiceWorker,
+    showImage: showImage
   };
 
   registerServiceWorker();

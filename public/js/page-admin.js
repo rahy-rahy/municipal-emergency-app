@@ -46,8 +46,8 @@
         if (bcInited || typeof L === 'undefined') return;
         bcInited = true;
         bcMap = L.map('bc-map').setView([center.lat, center.lng], 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19, attribution: 'Map data OpenStreetMap contributors'
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          maxZoom: 19, attribution: 'Map: Carto, OpenStreetMap contributors'
         }).addTo(bcMap);
         bcMap.on('click', function (e) {
           pin = { lat: e.latlng.lat, lng: e.latlng.lng };

@@ -40,7 +40,7 @@
           var docs = { users: [] };
           try { docs = await App.api('GET', '/api/staff/users/' + u.id + '/documents'); } catch (e) { docs = { documents: [] }; }
           var docLinks = (docs.documents || []).map(function (d) {
-            return '<a class="btn small secondary" target="_blank" href="/api/staff/documents/' + d.id + '/file">' + I18N.t('verify.viewid') + ' (' + d.kind.replace('id_', '').replace('_', ' ') + ')</a>';
+            return '<button class="btn small secondary" data-doc="/api/staff/documents/' + d.id + '/file" data-label="' + App.escapeHtml(d.kind.replace('id_', '').replace('_', ' ')) + '">' + I18N.t('verify.viewid') + ' (' + d.kind.replace('id_', '').replace('_', ' ') + ')</button>';
           }).join('');
           var elevated = u.suggestedRole && u.suggestedRole !== 'resident';
           var item = document.createElement('div');
@@ -59,6 +59,11 @@
             '</div>';
           el.appendChild(item);
         }
+        el.querySelectorAll('[data-doc]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            App.showImage(b.dataset.doc, 'ID document: ' + (b.dataset.label || ''));
+          });
+        });
         el.querySelectorAll('[data-approve]').forEach(function (b) {
           b.addEventListener('click', async function () {
             try { await App.api('POST', '/api/staff/users/' + b.dataset.approve + '/status', { status: 'verified' }); setMsg('Resident approved.', 'ok'); loadVerify(); }
@@ -84,13 +89,17 @@
           item.className = 'list-item';
           var flags = (r.needHelp ? ' <span class="chip sev-critical">' + I18N.t('report.needhelp') + '</span>' : '') +
                       (r.isSafe ? ' <span class="chip">' + I18N.t('report.imsafe') + '</span>' : '');
-          var photo = r.hasPhoto ? ' <a target="_blank" href="/api/reports/' + r.id + '/photo">' + I18N.t('report.photo') + '</a>' : '';
+          var photo = r.hasPhoto ? ' <button class="btn small secondary" data-photo="/api/reports/' + r.id + '/photo">' + I18N.t('report.photo') + '</button>' : '';
+          var loc = r.lat != null
+            ? r.lat.toFixed(4) + ', ' + r.lng.toFixed(4) +
+              ' <a href="https://www.google.com/maps/dir/?api=1&destination=' + r.lat + ',' + r.lng + '" target="_blank" rel="noopener">Directions</a>'
+            : 'no location';
           item.innerHTML =
             '<div class="row-between"><div>' +
               '<span class="type-tag type-' + r.type + '">' + I18N.t('type.' + r.type) + '</span>' + flags +
               '<div class="meta" style="margin-top:6px">' + App.escapeHtml(r.reporterName) + ' | ' + App.escapeHtml(r.reporterPhone || '') + '</div>' +
               (r.description ? '<div style="margin-top:4px">' + App.escapeHtml(r.description) + '</div>' : '') +
-              '<div class="meta">' + (r.lat != null ? r.lat.toFixed(4) + ', ' + r.lng.toFixed(4) : 'no location') + ' | ' + App.fmtTime(r.createdAt) + photo + '</div>' +
+              '<div class="meta">' + loc + ' | ' + App.fmtTime(r.createdAt) + photo + '</div>' +
             '</div>' +
             '<span class="chip"><span class="dot ' + r.status + '"></span>' + I18N.t('status.' + r.status) + '</span>' +
             '</div>' +
@@ -103,6 +112,9 @@
               '<button class="btn small" data-setstatus="' + r.id + '">' + I18N.t('common.save') + '</button>' +
             '</div>';
           el.appendChild(item);
+        });
+        el.querySelectorAll('[data-photo]').forEach(function (b) {
+          b.addEventListener('click', function () { App.showImage(b.dataset.photo, 'Report photo'); });
         });
         el.querySelectorAll('[data-setstatus]').forEach(function (b) {
           b.addEventListener('click', async function () {

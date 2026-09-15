@@ -339,3 +339,56 @@ input:focus, textarea:focus, select:focus, .btn:focus, .tab:focus, .incident-btn
 .call-list a:hover { background: var(--surface-2); text-decoration: none; }
 .call-list .num { font-size: 1.3rem; font-weight: 700; color: var(--danger-dark); }
 .call-list .lbl { font-size: 0.82rem; color: var(--muted); }
+
+/* Image viewer modal, used for ID documents and report photos */
+#img-viewer {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0, 0, 0, 0.85);
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  flex-direction: column;
+}
+#img-viewer.show { display: flex; }
+#img-viewer img {
+  max-width: 100%;
+  max-height: 82vh;
+  border-radius: var(--radius);
+  background: #fff;
+  object-fit: contain;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+#img-viewer .iv-bar { margin-top: 14px; display: flex; gap: 10px; }
+#img-viewer .iv-msg { color: #fff; margin-bottom: 12px; font-size: 0.95rem; opacity: 0.9; }
+
+/* Mobile: turn the section tabs into a fixed bottom navigation bar so
+   there is always a clear way back to any screen, including from the map. */
+@media (max-width: 700px) {
+  .tabs {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    z-index: 40;
+    border-top: 1px solid var(--line);
+    border-bottom: none;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.10);
+    background: var(--surface);
+  }
+  .tabs .inner { padding: 0; justify-content: space-around; gap: 0; flex-wrap: nowrap; }
+  .tab {
+    flex: 1 1 0;
+    text-align: center;
+    padding: 10px 2px;
+    font-size: 0.78rem;
+    border-bottom: none;
+    border-top: 3px solid transparent;
+  }
+  .tab.active { border-top-color: var(--primary); border-bottom-color: transparent; }
+  body { padding-bottom: 62px; }
+  #map { height: 340px; }
+}

@@ -34,11 +34,11 @@ services:
       - key: DEMO_MODE
         value: "false"
       - key: TOWN_NAME
-        value: Sakiet El Misk and Bhersaf
+        value: Hemleya
       - key: TOWN_LAT
-        value: "33.9086"
+        value: "33.9209"
       - key: TOWN_LNG
-        value: "35.6531"
+        value: "35.6469"
       - key: NUM_CIVIL_DEFENSE
         value: "125"
       - key: NUM_RED_CROSS
